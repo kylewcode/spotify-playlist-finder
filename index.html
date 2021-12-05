@@ -1,23 +1,71 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
-<head>
-  <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
 
-  <title>Game Score</title>
-  <meta name="description" content="The HTML5 Herald">
-  <meta name="author" content="SitePoint">
+    <title>Game Score</title>
+    <meta name="description" content="The HTML5 Herald" />
+    <meta name="author" content="SitePoint" />
 
-  <link rel="stylesheet" href="./vendor/bootstrap.min.css">
-  <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
 
-  <script data-main = "config" src = "vendor/require.js"></script>
+    <script data-main="config" src="vendor/require.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-</head>
+  <body>
+    <script>
+      function makeModal(playlists) {
+        return `
+          <div class="modal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Playlists</h5>
+              </div>
+              <div class="modal-body">
+                <p>${playlists}</p>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary modal-close"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>`;
+      }
 
-<body>
-    <div id="app">
-      
+      require(["/lib/api.js"], function (api) {
+        $(document).on("click", ".card", function () {
+          if ($(".modal").length > 0 ) {
+            return;
+          }
+          api.getPlaylists(this.id).then(({ playlists }) => {
+            const modal = makeModal(JSON.stringify(playlists.items));
+            $("body").append(modal);
+            $(".modal-close").click(function() {
+              $(".modal").remove();
+            });
+          });
+        });
+      });
+    </script>
+
+    <div class="container">
+      <div class="row">
+        <div id="categories" class="col"></div>
+      </div>
     </div>
-</body>
+    </div>
+  </body>
 </html>
